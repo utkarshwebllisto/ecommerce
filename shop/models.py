@@ -2,11 +2,15 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+
+
 class Product(models.Model):
     pname = models.CharField(max_length = 100)
     image = models.ImageField()
     price = models.IntegerField()
-
+    product_detail = models.TextField(blank=True, null=True)
+    owner = models.ForeignKey('auth.User', related_name='product', on_delete=models.CASCADE)
+    
     def __str__(self):
         return self.pname
 

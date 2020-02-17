@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+ <head>
+   <title>students api</title>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ </head>
+<body>
+<div>
+   <button class="apireq">click me </button> 
+</div>
+<div id="jsonresp" style="margin-top: 100px">
+   <p><label> ID :</label> <span id="id"></span></p>
+   <p><label> pname :</label> <span id="pname"></span></p>
+   <p><label> price :</label> <span id="price"></span></p>
+   <p><label> owner:</label> <span id="owner"></span></p>
+   <p><label> detail : </label> <span id="product_detail"></span></p> 
+</div>
+    <script type="text/javascript"></script>
+</body>
+</html>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script>
+        $('.apireq').click( function() {
+    $.ajax({
+             url : "http://localhost:8000/Product",
+             dataType: "json",
+             success : function (data) {
+                      $('#id').text( data[6].id);
+                      $('#pname').text( data[6].pname);
+                      $('#price').text( data[6].price);
+                      $('#owner').text( data[6].owner);
+                      $('#product_detail').text( data[6].product_detail);
+
+                    }
+                 });
+             });
