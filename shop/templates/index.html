@@ -12,12 +12,18 @@
       <div class="container" align="left">
          <table border=5px>
 
-
+      <button class="apireq">click me </button> 
+</div>
+<div id="jsonresp" style="margin-top: 100px">
+   <p><label></label> <span id="pname"></span></p>
+   <p><label></label> <span id="price"></span></p>
+   <p><label></label> <span id="owner"></span></p>
+   <p><label></label> <span id="product_detail"></span></p> 
+</div>
 
             <tr>
-               <th>id</th>
                <th>product name</th>
-               <th>price </th>
+               <th>select </th>
                
             </tr>
 
@@ -36,24 +42,43 @@
              .catch(function (err) {
                  console.log('error: ' + err);
              });
-         
-         function appendData(data) {
-             var mainContainer = document.getElementById("myData");
-             var tr;
+           // // $('.apireq').click( function() {
+           //  $.ajax({
+           //   url : "http://localhost:8000/Product",
+           //   dataType: "json",
+           //   success : 
+           function appendData(data) {
+                       var mainContainer = document.getElementById("myData");
+                        var tr;
              for (var i = 0; i < data.length; i++) {
                  debugger;
                  tr = $('<tr/>');
-                 tr.append("<td>" + data[i].id + "</td>");
+                 // tr.append("<td>" + data[i].id + "</td>");
+                 // tr.append("<td>" + data[i].pname + "</td>");
                  tr.append("<td>" + data[i].pname + "</td>");
-                 tr.append("<td>" + data[i].price + "</td>");
-                 // var mylink = "SnippetDetail/" + 'data[i].id'
-                  var url = "ProductDetail/"+data[i].id;
-                 // var url = "cart/"+data[i].id
-                 tr.append("<a href = " + url + ">" + 'Addcart' + '</a>')
+                 var url = "ProductDetail/"+data[i].id;
+                 tr.append("<a href = " + url + ">" + 'Show detail' + '</a>')
                  $('table').append(tr);
              }
          }
+       </script>
+       <script>
+            $('.apireq').click( function() {
+    $.ajax({
+             url : "http://localhost:8000/Product",
+             type: "GET",
+             dataType: "json",
+             success : function (data) {
+                      $('#id').text( data[0].id);
+                      $('#pname').text( data[0].pname);
+                      $('#price').text( data[0].price);
+                      $('#owner').text( data[0].owner);
+                      $('#product_detail').text( data[0].product_detail);
+                           }
+                 });
+         }
       </script>
-       
+    
+
    </body>
 </html> 
