@@ -25,14 +25,20 @@ SECRET_KEY = 'pm7-mrm0sye-*i2n+*16zij8pd_md8vtamzbcra#l0rfsgl9#='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
-
+CORS_ORIGIN_ALLOW_ALL=True
+APPEND_SLASH = True
 # Application definition
 
 INSTALLED_APPS = [
     'shop',
     'rest_framework',
+    'corsheaders',
+    'allauth',
+    'allauth.account',
+    'django.contrib.sites',
+    'allauth.socialaccount',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +46,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler'
+}
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'shop.exception_handler_400.custom_exception_handler'
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +63,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'ecom.urls'
@@ -71,6 +87,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecom.wsgi.application'
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+         'rest_framework.authentication.BasicAuthentication',
+    )}
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -130,5 +151,9 @@ STATIC_URL = '/static/'
 MEDIA_URL='/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+SIGNUP_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL =  '/'
 
 STATIC_URL = '/static/'

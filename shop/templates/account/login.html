@@ -1,0 +1,30 @@
+ 
+{% extends 'base.html' %}
+<!DOCTYPE html>
+{% block content %}
+<html>
+   <head>
+      <title>SIGNUP</title>
+   </head>
+   <body>
+      <center>
+         <h3>Sign HERE</h3>
+         <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button>Submit</button>
+         </form>
+<div class="container">
+ <div class="row">
+  <br><br>
+  <div class="col m6 card-panel white offset-m3" style="text-align:center">
+    <br>
+   
+    <br>
+  </div>
+ </div>
+</div>
+      </center>
+   </body>
+   {% endblock %}
+</html>

@@ -1,84 +1,157 @@
-<!DOCTYPE html>
-<html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title></title>
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-   </head>
-   <body>
-    
-      <div class="container" align="left">
-         <table border=5px>
+{% extends 'base.html' %}
+{% block content %}
 
-      <button class="apireq">click me </button> 
-</div>
-<div id="jsonresp" style="margin-top: 100px">
-   <p><label></label> <span id="pname"></span></p>
-   <p><label></label> <span id="price"></span></p>
-   <p><label></label> <span id="owner"></span></p>
-   <p><label></label> <span id="product_detail"></span></p> 
-</div>
+    
+      <div class="container">
+         <table border=5px></div>
+
 
             <tr>
                <th>product name</th>
                <th>select </th>
+               <th>Delete </th>
+               
                
             </tr>
 
          </table>
       </div>
  </form>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script>
-         fetch('http://localhost:8000/Product/')
-             .then(function (response){
-                 return response.json();
-             })
-             .then(function (data) {
-                 appendData(data);
-             })
-             .catch(function (err) {
-                 console.log('error: ' + err);
-             });
-           // // $('.apireq').click( function() {
-           //  $.ajax({
-           //   url : "http://localhost:8000/Product",
-           //   dataType: "json",
-           //   success : 
-           function appendData(data) {
-                       var mainContainer = document.getElementById("myData");
+        
+        url = 'http://localhost:8000/productlist/'
+        data = {csrfmiddlewaretoken: "{{ csrf_token }}" },
+        $.ajax({
+           url: url,
+           type:"GET",
+           data: data,
+           success: function appendData(data) {
+              var mainContainer = document.getElementById("myData");
                         var tr;
              for (var i = 0; i < data.length; i++) {
-                 debugger;
                  tr = $('<tr/>');
-                 // tr.append("<td>" + data[i].id + "</td>");
-                 // tr.append("<td>" + data[i].pname + "</td>");
                  tr.append("<td>" + data[i].pname + "</td>");
-                 var url = "ProductDetail/"+data[i].id;
-                 tr.append("<a href = " + url + ">" + 'Show detail' + '</a>')
+                 let id = data[i].id
+                 tr.append('<td><button onclick="showDetail('+ id +')"class="btn-lg btn btn-primary">Product Detail</button></td>')
+                 tr.append('<td><button onclick="Delete('+ id +')"class="btn-lg btn btn-primary" id ="Delete">Delete product </button></td>')
                  $('table').append(tr);
-             }
-         }
-       </script>
-       <script>
-            $('.apireq').click( function() {
-    $.ajax({
-             url : "http://localhost:8000/Product",
-             type: "GET",
-             dataType: "json",
-             success : function (data) {
-                      $('#id').text( data[0].id);
-                      $('#pname').text( data[0].pname);
-                      $('#price').text( data[0].price);
-                      $('#owner').text( data[0].owner);
-                      $('#product_detail').text( data[0].product_detail);
-                           }
-                 });
-         }
-      </script>
-    
 
-   </body>
-</html> 
+               }
+             }
+         })
+
+        function showDetail(id) {
+           url="http://127.0.0.1:8000/productlist/"+id+""
+          /* data = {csrfmiddlewaretoken: "{{ csrf_token }}" },*/
+           $.ajax({ 
+            url:url,
+            type:'GET',
+           /* data:data,*/
+            dataType: "json",
+            success: function(data){
+                  $('#ID').text(data.id);
+                  $('#IMAGE').text(data.image);
+                  $('#NAME').text(data.pname);
+                  $('#PRICE').text(data.price);
+                  $('#DETAIL').text(data.product_detail);
+                  $('#SELLER').text(data.owner);
+        }
+      });
+ }    
+        function Delete(id) {
+        // $(document).ready(function () {  
+        //      $("#Delete").click(function Delete(id) { 
+           url = "http://127.0.0.1:8000/productlist/"+id+"/destroy"
+           data = {csrfmiddlewaretoken: "{{ csrf_token }}" }
+             $.ajax({
+                url: url,
+                type:"DELETE",
+                data: data,
+                success: function (data) {
+                    
+                }
+              });
+         }
+       
+ </script>
+ <script>
+    $(document).ready(function () {  
+             $("#Save").click(function () { 
+    var formData = new FormData();
+    var file = $('#img')[0].files[0] 
+    var token = "{{ csrf_token }}"
+    var name = $('#pname').val();
+    var price = $('#price').val();
+    var product_detail = $('#product_detail').val();
+    var owner = $('#owner').val();
+    formData.append("image", file, file.name);
+    formData.append("pname", name);
+    formData.append("price", price);
+    formData.append("product_detail",product_detail);
+    formData.append("csrfmiddlewaretoken", token);
+    url = 'http://localhost:8000/create/'
+    console.log(url)
+    debugger
+         $.ajax({
+          type: "POST",
+          enctype: 'multipart/form-data',
+          url:url,
+          data: formData,
+          processData: false,
+          contentType: false,
+          cache: false,
+          timeout: 600000,
+          success: function (data) {
+            alert('product add successfully')
+              console.log("SUCCESS : ", data);
+
+          },
+          error: function (data) {
+            alert('something went wrong')
+              console.log("ERROR : ", e);
+
+          }
+      });
+     });
+});
+ </script>
+    
+<div id="jsonresp" style="margin-top: 100px">
+
+   <p><label></label> <span id="ID"></span></p>
+   <p><label></label> <span id="IMAGE"></span></p>
+   <p><label></label> <span id="NAME"></span></p>
+   <p><label></label> <span id="PRICE"></span></p>
+   <p><label></label> <span id="DETAIL"></span></p>
+   <p><label></label> <span id="SELLER"></span></p> 
+</div>
+<br>
+
+
+<form id='form1'>
+  {% csrf_token %}
+
+<h1>fill detail here</h1>
+prouduct_name <br/>
+<input type="text" id="pname"/>
+<br/>
+price <br/>
+<input type="number" id="price"/>
+<br/>
+image
+<input type="file" src="/wp-content/uploads/sendform.png"  id ='img' alt="Submit" width="100">
+<br>
+<br>
+product detail<br/>
+<input type="text" id="product_detail"/>
+<p/>
+
+
+<button id="Save">submit </button>
+</p>
+</form>
+</div>
+{% endblock %}
+<!-- $.get('url=')
+ https://stackoverflow.com/questions/48012447/django-transforming-form-data-to-rest-api-post-request -->

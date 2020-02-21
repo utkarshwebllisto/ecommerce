@@ -6,11 +6,18 @@ from rest_framework.urlpatterns import format_suffix_patterns
 urlpatterns = format_suffix_patterns([  
     #path('', views.api_root), 
     path('', views.homepage),
+    path('productlist/', views.ProductList.as_view()),
     path('api-auth/', include('rest_framework.urls')),
-    path('users/', views.UserList.as_view(),name='user-list'),
-    path('Product/', views.ProductList.as_view(), name='product-list'),
-   	path('Product/<int:pk>', views.ProductDetail.as_view(), name='product-detail'),
-    path('ProductDetail/<int:pk>',views.ProductDetail.as_view()),
+    path('productlist/<int:pk>', views.ProductDetail.as_view()),    
+    path('productlist/<int:pk>/destroy', views.ProductDelete.as_view()),
+    path('create/', views.ProductCreate.as_view())
+    ])
+    #path('create/', views.ProductCreate)])
+   # handler400 = 'project.error_handlers.bad_request'
+
+   	# path('Product/<int:pk>', views.ProductDetail.as_view(), name='product-detail'),
+    # # path('ProductDetail/',views.ProductDetail.as_view()),
+    # path('ProductDetail/<int:pk>',views.ProductDetail.as_view()),
     # path('cart/<int:pk>',views.cart, name='cart')
   #  path('Product/<int:pk>/', views.ProductDetail.as_view(), name='product-detail'),
 
@@ -25,4 +32,4 @@ urlpatterns = format_suffix_patterns([
     # path('User/<int:pk>/', views.UserDetail.as_view(), name='user-detail'),
 
     # path('User/<int:pk>/',user_set, name='UserViewSet'),
-])
+#return response(status=rest_framework.exceptions.bad_request)

@@ -9,7 +9,7 @@ class Product(models.Model):
     image = models.ImageField()
     price = models.IntegerField()
     product_detail = models.TextField(blank=True, null=True)
-    owner = models.ForeignKey('auth.User', related_name='product', on_delete=models.CASCADE)
+    owner = models.ForeignKey('auth.User', related_name='product', on_delete=models.CASCADE,blank=True, null=True)
     
     def __str__(self):
         return self.pname
