@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-
+<h1>LOGIN:{{request.user}}</h1>
     
       <div class="container">
          <table border=5px></div>
@@ -10,7 +10,7 @@
                <th>product name</th>
                <th>select </th>
                <th>Delete </th>
-               
+               <th>Update </th>
                
             </tr>
 
@@ -34,7 +34,8 @@
                  tr.append("<td>" + data[i].pname + "</td>");
                  let id = data[i].id
                  tr.append('<td><button onclick="showDetail('+ id +')"class="btn-lg btn btn-primary">Product Detail</button></td>')
-                 tr.append('<td><button onclick="Delete('+ id +')"class="btn-lg btn btn-primary" id ="Delete">Delete product </button></td>')
+                 tr.append('<td><button onclick="Delete('+ id +')"class="btn-lg btn btn-primary" id ="Delete">product delete</button></td>')
+                 tr.append('<td><button onclick="Update('+ id +')"class="btn-lg btn btn-primary" id ="formButton">Update</button></td>')
                  $('table').append(tr);
 
                }
@@ -42,7 +43,7 @@
          })
 
         function showDetail(id) {
-           url="http://127.0.0.1:8000/productlist/"+id+""
+           url="http://127.0.0.1:8000/productlist/"+id+"" 
           /* data = {csrfmiddlewaretoken: "{{ csrf_token }}" },*/
            $.ajax({ 
             url:url,
@@ -60,15 +61,14 @@
       });
  }    
         function Delete(id) {
-        // $(document).ready(function () {  
-        //      $("#Delete").click(function Delete(id) { 
            url = "http://127.0.0.1:8000/productlist/"+id+"/destroy"
            data = {csrfmiddlewaretoken: "{{ csrf_token }}" }
              $.ajax({
                 url: url,
                 type:"DELETE",
                 data: data,
-                success: function (data) {
+                success: function (data) {alert('product deleted')
+              
                     
                 }
               });
@@ -84,14 +84,12 @@
     var name = $('#pname').val();
     var price = $('#price').val();
     var product_detail = $('#product_detail').val();
-    var owner = $('#owner').val();
     formData.append("image", file, file.name);
     formData.append("pname", name);
     formData.append("price", price);
     formData.append("product_detail",product_detail);
     formData.append("csrfmiddlewaretoken", token);
     url = 'http://localhost:8000/create/'
-    console.log(url)
     debugger
          $.ajax({
           type: "POST",
@@ -127,12 +125,26 @@
    <p><label></label> <span id="SELLER"></span></p> 
 </div>
 <br>
+<script type="text/javascript">
+  $(document).ready(function() {
+  $("#formButton").click(function() {
+    $("#form1").toggle();
+  });
+});
+</script>
+<style type="text/css">
+  {display:none;
+  }
+  #form1 {
 
+display:none;
 
+}
+</style>
+
+<button type="button" class="btn-lg btn btn-primary" id="formButton">Create user</button>
 <form id='form1'>
   {% csrf_token %}
-
-<h1>fill detail here</h1>
 prouduct_name <br/>
 <input type="text" id="pname"/>
 <br/>
@@ -152,6 +164,39 @@ product detail<br/>
 </p>
 </form>
 </div>
+<script type="text/javascript">
+  
+</script>
+<script type="text/javascript">
+   function Update(id) {
+           url = "http://127.0.0.1:8000/productlist/"+id+"/destroy"
+         var dataObject = { 'newWeekEntry': newEntry, 'oldWeekEntry': oldEntry };
+
+        alert(JSON.stringify(dataObject));
+
+        $.ajax({
+            url: URL,
+            type: 'PUT',    
+            data: JSON.stringify(dataObject),
+            dataType: 'json',
+            success: function(result) {
+                alert("success?");
+            }
+        });
+
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 {% endblock %}
-<!-- $.get('url=')
- https://stackoverflow.com/questions/48012447/django-transforming-form-data-to-rest-api-post-request -->

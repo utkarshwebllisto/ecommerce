@@ -6,7 +6,7 @@ from django.db import models
 
 class Product(models.Model):
     pname = models.CharField(max_length = 100)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='item_images')
     price = models.IntegerField()
     product_detail = models.TextField(blank=True, null=True)
     owner = models.ForeignKey('auth.User', related_name='product', on_delete=models.CASCADE,blank=True, null=True)

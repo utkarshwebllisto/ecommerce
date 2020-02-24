@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 
 class UserSerializers(serializers.ModelSerializer):
-    #product = serializers.PrimaryKeyRelatedField(many=True, queryset=Product.objects.all())
     product = serializers.HyperlinkedRelatedField(many=True, view_name='ProductList', read_only=True)
     class Meta:
         model = User
@@ -18,11 +17,10 @@ class ProductSerializers(serializers.ModelSerializer):
 
 
 class ProductlistSerializers(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-    class Meta:
+     owner = serializers.ReadOnlyField(source='owner.username')
+     class Meta:
         model=Product
         fields= "__all__"
-
 
 class ProductCreateSerializers(serializers.ModelSerializer):
    # owner = serializers.ReadOnlyField(source='owner.username')
@@ -31,15 +29,17 @@ class ProductCreateSerializers(serializers.ModelSerializer):
         fields= "__all__"
 
 
+class UpdateSerializers(serializers.ModelSerializer):
+    image = serializers.ImageField(max_length=None, use_url=True,required=False)
+    class Meta:
+        model=Product
+        fields= '__all__'
 
-# class AddcartSerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model=Addcart
-#         fields = '__all__'
+class UserProductSerializers(serializers.ModelSerializer):
+    class Meta:
+        owner = serializers.ReadOnlyField(source='owner')
+        owner = {'owner_id':owner.id,'owner_name':owner.first_name}
+        model=Product
+        fields = ['id','pname','owner']
 
 
-
-# class OrderSerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model=Order
-#         fields = '__all__'

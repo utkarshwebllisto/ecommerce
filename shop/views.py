@@ -4,7 +4,9 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 from shop.serializers import (ProductSerializers,
                               ProductlistSerializers,
-                              ProductCreateSerializers
+                              ProductCreateSerializers,
+                              UpdateSerializers,
+                              UserProductSerializers
                              # ProductDetailSerializers,
                               
                               #AddcartSerializers,
@@ -33,25 +35,37 @@ class ProductList(APIView):
         serializer = ProductSerializers(product, many=True)
         return Response(serializer.data)
 
+class   UserProduct(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = UserProductSerializers
+
 
 class ProductDetail(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductlistSerializers
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ProductDelete(generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class= ProductlistSerializers
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ProductCreate(generics.CreateAPIView):
      queryset = Product.objects.all()
      serializer_class= ProductCreateSerializers
+     
      def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
-    
+
+
+class ProductUpdate(generics.RetrieveUpdateAPIView):
+      queryset = Product.objects.all()
+      serializer_class= UpdateSerializers
+
+      def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
 
 @login_required
 def homepage(request):
