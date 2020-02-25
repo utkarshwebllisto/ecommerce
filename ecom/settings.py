@@ -34,8 +34,9 @@ APPEND_SLASH = True
 INSTALLED_APPS = [
     'shop',
     'rest_framework',
-    'corsheaders',
     'allauth',
+    'corsheaders',
+    'django_filters',
     'allauth.account',
     'django.contrib.sites',
     'allauth.socialaccount',

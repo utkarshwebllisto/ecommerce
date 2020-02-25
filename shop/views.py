@@ -14,7 +14,8 @@ from shop.serializers import (ProductSerializers,
                              )
 from .models import(Product,
 	                   Addcart,
-	                   Order)	
+	                   Order
+                     )	
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import renderers
 from django.contrib.auth.models import User
@@ -28,6 +29,9 @@ from rest_framework import mixins
 from rest_framework import status
 from django.contrib.auth.decorators import login_required
 from rest_framework import permissions
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
+
 
 class ProductList(APIView):
    def get(self, request, format=None):
@@ -35,9 +39,26 @@ class ProductList(APIView):
         serializer = ProductSerializers(product, many=True)
         return Response(serializer.data)
 
-class   UserProduct(generics.RetrieveAPIView):
+class UserProduct(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = UserProductSerializers
+
+    def get(self, request):
+      serializer = self.serializer_class(data=self.queryset.all(), many=True)
+      serializer.is_valid()
+      data = []
+      for product in self.queryset.all():
+        data.append({
+          "id": product.id,
+          "pname":product.pname,
+          "user":{'owner_id':product.owner.id,
+                  'owner_email':product.owner.email,
+                  'owner_name': product.owner.username,
+                 } 
+
+
+          })
+      return Response(data)
 
 
 class ProductDetail(generics.RetrieveAPIView):
@@ -80,3 +101,4 @@ def homepage(request):
 
 
 
+#{% url 'some-url-name' v1 v2 %}

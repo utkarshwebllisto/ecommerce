@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 
 
 class UserSerializers(serializers.ModelSerializer):
-    product = serializers.HyperlinkedRelatedField(many=True, view_name='ProductList', read_only=True)
-    class Meta:
+  station = serializers.RelatedField(read_only=True)
+  class Meta:
         model = User
         fields ='__all__'
 
@@ -22,8 +22,8 @@ class ProductlistSerializers(serializers.ModelSerializer):
         model=Product
         fields= "__all__"
 
+
 class ProductCreateSerializers(serializers.ModelSerializer):
-   # owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model=Product
         fields= "__all__"
@@ -35,11 +35,8 @@ class UpdateSerializers(serializers.ModelSerializer):
         model=Product
         fields= '__all__'
 
+
 class UserProductSerializers(serializers.ModelSerializer):
     class Meta:
-        owner = serializers.ReadOnlyField(source='owner')
-        owner = {'owner_id':owner.id,'owner_name':owner.first_name}
-        model=Product
-        fields = ['id','pname','owner']
-
-
+        model =Product
+        fields = ('id','pname','owner')
