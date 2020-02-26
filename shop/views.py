@@ -6,15 +6,15 @@ from shop.serializers import (ProductSerializers,
                               ProductlistSerializers,
                               ProductCreateSerializers,
                               UpdateSerializers,
-                              UserProductSerializers
+                              UserProductSerializers,
+                              CostumerSerializers
                              # ProductDetailSerializers,
                               
                               #AddcartSerializers,
                               #OrderSerializers,
                              )
 from .models import(Product,
-	                   Addcart,
-	                   Order
+                    Costumer
                      )	
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import renderers
@@ -42,24 +42,7 @@ class ProductList(APIView):
 class UserProduct(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = UserProductSerializers
-
-    def get(self, request):
-      serializer = self.serializer_class(data=self.queryset.all(), many=True)
-      serializer.is_valid()
-      data = []
-      for product in self.queryset.all():
-        data.append({
-          "id": product.id,
-          "pname":product.pname,
-          "user":{'owner_id':product.owner.id,
-                  'owner_email':product.owner.email,
-                  'owner_name': product.owner.username,
-                 } 
-
-
-          })
-      return Response(data)
-
+ 
 
 class ProductDetail(generics.RetrieveAPIView):
     queryset = Product.objects.all()
@@ -86,7 +69,9 @@ class ProductUpdate(generics.RetrieveUpdateAPIView):
       def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-
+class Costumer(generics.ListCreateAPIView):
+   queryset = Costumer.objects.all()
+   serializer_class = CostumerSerializers
 
 @login_required
 def homepage(request):

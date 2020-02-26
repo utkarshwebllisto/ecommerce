@@ -19,8 +19,7 @@
  </form>
  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script>
-        
-        url = 'http://localhost:8000/productlist/'
+        url = {% url 'productlist'  %}
         data = {csrfmiddlewaretoken: "{{ csrf_token }}" },
         $.ajax({
            url: url,
@@ -35,7 +34,7 @@
                  let id = data[i].id
                  tr.append('<td><button onclick="showDetail('+ id +')"class="btn-lg btn btn-primary">Product Detail</button></td>')
                  tr.append('<td><button onclick="Delete('+ id +')"class="btn-lg btn btn-primary" id ="Delete">product delete</button></td>')
-                 tr.append('<td><button onclick="Update('+ id +')"class="btn-lg btn btn-primary" id ="formButton">Update</button></td>')
+                 tr.append('<td><button onclick="update('+ id +')"class="btn-lg btn btn-primary" id ="formButton">Update</button></td>')
                  $('table').append(tr);
 
                }
@@ -104,12 +103,8 @@
           timeout: 600000,
           success: function (data) {
             alert('product add successfully')
-              console.log("SUCCESS : ", data);
-
-          },
-          error: function (data) {
-            alert('something went wrong')
-              console.log("ERROR : ", e);
+             window.location.reload()
+              //console.log("SUCCESS : ", data);
 
           }
       });
@@ -162,36 +157,91 @@ product detail<br/>
 <p/>
 
 
-<button id="Save">submit </button>
+<button id="Save">Add product </button>
 </p>
 </form>
 </div>
 <script type="text/javascript">
   
 </script>
+<div>
+    <h1>UPDATE PRODUCT</h1>
+    <form>
+        {% csrf_token %}
+        <div>
+            prouduct_name <br>
+            <input type="text" id="uname"/>
+        </div>
+        <div>
+            price <br/>
+            <input type="number" id="uprice"/>
+        </div>
+        <div>
+            product detail<br/>
+            <input type="text" id="uproduct_detail"/>
+        </div>
+        <div>
+            <input type="number" id="uid" hidden />
+        </div>
+        <div>
+            <button type="button" id="Update">UPDATE</button>
+        </div>
+    </form>
+</div>
 <script type="text/javascript">
-   function Update(id) {
-           url = "http://127.0.0.1:8000/productlist/"+id+"/destroy"
-         var dataObject = { 'newWeekEntry': newEntry, 'oldWeekEntry': oldEntry };
-
-        alert(JSON.stringify(dataObject));
-
-        $.ajax({
-            url: URL,
-            type: 'PUT',    
-            data: JSON.stringify(dataObject),
-            dataType: 'json',
-            success: function(result) {
-                alert("success?");
-            }
-        });
-
-        
-    }
-
-
-
-
+  function update(id) {
+    console.log(id);
+    url = "http://127.0.0.1:8000/productlist/"+id+"" 
+    $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: "json",
+        success: function(data) {
+             debugger
+            console.log(data)
+            $('#uid').val(data.id);
+            $('#uname').val(data.pname);
+            $('#uprice').val(data.price);
+            $('#uproduct_detail').val(data.product_detail);
+        }
+    })
+}
+$(document).ready(function () {
+              $("#Update").click(function () {
+            debugger;
+               var formData = new FormData();
+               var u_id = $('#uid').val();
+               var token = "{{ csrf_token }}"
+               var name = $('#uname').val();
+               var price = $('#uprice').val();
+               var product_detail = $('#uproduct_detail').val();
+               url = "http://127.0.0.1:8000/update/"+u_id+"";
+               // formData.append("pname", name);
+               // formData.append("price", price);
+               // formData.append("product_detail",product_detail);
+               // formData.append("csrfmiddlewaretoken", token);
+               data = {
+                        'pname' :name,
+                        'price': price,
+                        'product_detail' : product_detail,
+                        'csrfmiddlewaretoken' : '{{ csrf_token }}',
+               }
+               console.log(data);
+                    $.ajax({
+                     type: "PATCH",
+                     url:url,
+                     data: data,
+                     success: function (data) {
+                       alert('product Updated successfully')
+                         console.log("SUCCESS : ", data);
+                          window.location.reload()
+                     },
+                 
+                 });
+                              console.log(data);
+                });
+              });
+</script>
 
 
 

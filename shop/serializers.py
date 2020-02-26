@@ -1,13 +1,12 @@
 from rest_framework import serializers
-from .models import Product,Addcart,Order
+from .models import Product,Costumer
 from django.contrib.auth.models import User
-
+from rest_framework.validators import UniqueTogetherValidator
 
 class UserSerializers(serializers.ModelSerializer):
-  station = serializers.RelatedField(read_only=True)
-  class Meta:
+   class Meta:
         model = User
-        fields ='__all__'
+        fields =['id','username','email']
 
 
 class ProductSerializers(serializers.ModelSerializer):
@@ -29,6 +28,13 @@ class ProductCreateSerializers(serializers.ModelSerializer):
         fields= "__all__"
 
 
+
+class CostumerSerializers(serializers.ModelSerializer):
+    class Meta:
+        model=Costumer
+        fields= "__all__"
+
+
 class UpdateSerializers(serializers.ModelSerializer):
     image = serializers.ImageField(max_length=None, use_url=True,required=False)
     class Meta:
@@ -37,6 +43,8 @@ class UpdateSerializers(serializers.ModelSerializer):
 
 
 class UserProductSerializers(serializers.ModelSerializer):
+    owner= UserSerializers()
+    costumer = CostumerSerializers()
     class Meta:
-        model =Product
-        fields = ('id','pname','owner')
+       model =Product
+       fields = ('id','pname','owner','costumer')
